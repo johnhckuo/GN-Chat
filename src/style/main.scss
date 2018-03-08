@@ -12,66 +12,7 @@ body{
 	overflow-y: scroll;
 }
 
-#container{
-	display:flex;
-	width: 90vw;
+#app{
+	width: 100vw;
 	height: 100vh;
-	align-items: center;
-	flex-direction: column;
-}
-
-.control_field{
-	@include flex-center;
-	margin-top:20px;
-	* {
-		margin-left:5px;
-		margin-right:5px;
-	}
-}
-
-.editing *{
-	margin-left:5px;
-	margin-right:5px;
-}
-
-.settings_field{
-	border: 1px solid;
-	padding:5px;
-}
-
-.list_container{
-	margin-top:20px;
-}
-
-.logo{
-	position:absolute;
-	z-index:100;
-	left:10px;
-	top:10px;
-}
-
-li {
-	@include flex-center;
-	cursor: pointer;
-	list-style-type: none;
-	margin: 0;
-	padding: 5px;
-	height: 10vh;
-	border: 1px solid;
-	transition: background .3s;
-	float:left;
-	margin: $margin;
-	padding: $padding;
-	border-radius:10px;
-	&:hover {
-		background: #CCC;
-		.complete{
-			display: inline;
-		}
-	}
-	*{
-		margin-left:10px;
-		margin-right:10px;
-	}
-
 }

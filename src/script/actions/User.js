@@ -1,17 +1,19 @@
-export function setUsername(name) {
+export function setUsername(name, age) {
   return {
     type: 'SET_USER_NAME',
-    payload: name,
+    payload: {
+   		name,
+   		age
+    }
   }
 }
 
 
-export function fetchUser() {
+export function fetchUser(id) {
   return {
     type: "FETCH_USER_FULFILLED",
     payload: {
-      name: "Will",
-      age: 35,
+      id
     }
   }
 }

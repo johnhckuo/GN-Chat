@@ -27,24 +27,31 @@
 	box-sizing: border-box;
 	color: white;
 	.msg{
-		width:100%;
 		height:auto;
 		margin-bottom:10px;
-	}
-	span{
-		background: rgba(0, 0, 255, 0.5);
-		padding:10px;
-		height: 20px;
-		width: auto;
-		border-radius: 15px;
-		
+		display: inline-block;
+		.msg_content{
+			background: rgba(0, 0, 255, 0.5);
+			padding:10px;
+			height: 20px;
+			width: auto;
+			border-radius: 15px;
+		}
+
+
+		div{
+			display: inline-block;
+			color:black;
+		}
 	}
 	.fromMsg{
-		float:left;
+		display: inline-block;
 	}
 	.toMsg{
+		display: inline-block;
 		float:right;
 	}
+
 }
 
 .chatBar{

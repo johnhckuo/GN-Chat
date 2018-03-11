@@ -6,6 +6,7 @@ import * as User from "../actions/User"
 
 var chatRoomId = 0;
 var username = "johnhckuo";
+var otherusername = "zaza";
 
 @connect((store) => {
   return {
@@ -20,7 +21,8 @@ export default class Chatroom extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(Chat.createChatroom(username));
+    this.props.dispatch(Chat.createChatroom(username, 22));
+    this.props.dispatch(Chat.createChatroom(otherusername, 26));
   }
 
   currentTime() {
@@ -46,6 +48,8 @@ export default class Chatroom extends React.Component {
 
   sendMessage(currentMessage){
     this.props.dispatch(Chat.setMsg(chatRoomId, username, currentMessage, this.currentTime()));
+    this.props.dispatch(Chat.setMsg(chatRoomId, otherusername, "What?", this.currentTime()));
+
   }
 
   onInputMessage(e){
@@ -62,12 +66,16 @@ export default class Chatroom extends React.Component {
         {
           currentChatroom.message.map((val)=>{
             if (val.user === username){
-              return (<div className="msg" key={val.id}>
-                <span className = "toMsg">{val.content}</span>
+              return (<div className="msg toMsg" key={val.id}>
+                <div className = "msg_content">{val.content}</div>
+                <div className = "sent_time">{val.timestamp}</div>
               </div>);
             }else{
-              return(<div className="msg" key={val.id}>
-                <span className = "fromMsg">{val.content}</span>
+              return(<div className="msg fromMsg" key={val.id}>
+                <div className = "msg_sender">{val.user}</div>
+                <div className = "msg_content">{val.content}</div>
+                <div className = "sent_time">{val.timestamp}</div>
+
               </div>);
             }
           })

@@ -1,9 +1,10 @@
-export function setUsername(name, age) {
+export function createUser(name, age, image) {
   return {
-    type: 'SET_USER_NAME',
+    type: 'CREATE_USER',
     payload: {
    		name,
-   		age
+   		age,
+      image
     }
   }
 }
@@ -11,7 +12,7 @@ export function setUsername(name, age) {
 
 export function fetchUser(id) {
   return {
-    type: "FETCH_USER_FULFILLED",
+    type: "FETCH_USER",
     payload: {
       id
     }

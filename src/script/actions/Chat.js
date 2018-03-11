@@ -8,12 +8,12 @@ export function fetchChatContent(chatId, user) {
     }
   }
 }
-export function setMsg(chatId, user, content, timestamp) {
+export function setMsg(chatId, userId, content, timestamp) {
   return {
     type: "SET_MSG",
     payload: {
       chatId,
-      user,
+      userId,
       content,
       timestamp
     }

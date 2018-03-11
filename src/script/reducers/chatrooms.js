@@ -21,10 +21,10 @@ export default function reducer(state={
         newObj.RoomArr[action.payload.chatId].currentMessage = "";
         newObj.RoomArr[action.payload.chatId].message.push(
           {
-              messageId: state.RoomArr[action.payload.chatId].message.length, 
-              content: action.payload.content, 
+              messageId: state.RoomArr[action.payload.chatId].message.length,
+              content: action.payload.content,
               timestamp: action.payload.timestamp, 
-              user: action.payload.user
+              userId: action.payload.userId
           }
         );
         return newObj;
@@ -47,7 +47,7 @@ export default function reducer(state={
         return newObj;
       }
 
-      
+
     }
     return state
 }

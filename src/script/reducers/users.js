@@ -1,5 +1,5 @@
 export default function reducer(state={
-    user: [],
+    UserList: [],
     fetching: false,
     fetched: false,
     error: null,
@@ -8,23 +8,23 @@ export default function reducer(state={
     switch (action.type) {
       case "FETCH_USER": {
         return {
-          ...state.user[action.payload.id],          
+          ...state.UserList[action.payload.id],
         }
+      }
+      case "CREATE_USER": {
 
-      }
-      case "FETCH_USER_FULFILLED": {
-        return {
-          ...state,
-          fetching: false,
-          fetched: true,
-          user: action.payload,
-        }
-      }
-      case "SET_USER_NAME": {
-        return {
-          ...state,
-          user: {id: state.user.length, name: action.payload.name, age: action.payload.name},
-        }
+        var newObj = {
+          ...state
+        };
+        newObj.UserList.push(
+          {
+            id: state.UserList.length,
+            name: action.payload.name,
+            age: action.payload.name,
+            image: action.payload.image
+          }
+        );
+        return newObj;
       }
     }
 

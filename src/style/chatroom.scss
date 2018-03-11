@@ -23,9 +23,9 @@
 	width:100%;
 	height:100%;
 	overflow-y: scroll;
-	padding-left: 20px;
-	padding-right: 20px;
+	padding:20px;
 	box-sizing: border-box;
+	color: white;
 	.msg{
 		width:100%;
 		height:auto;
@@ -36,7 +36,8 @@
 		padding:10px;
 		height: 20px;
 		width: auto;
-		border-radius: 5px;
+		border-radius: 15px;
+		
 	}
 	.fromMsg{
 		float:left;
@@ -65,4 +66,12 @@
 		float: right;
 	}
 
+}
+
+input {
+	padding:20px 10px 20px 10px; 
+	background:#ccc; 
+	border:0 none;
+	-webkit-border-radius: 5px;
+	border-radius: 5px; 
 }

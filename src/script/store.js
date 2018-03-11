@@ -8,5 +8,6 @@ import reducer from "./reducers"
 
 const logger = createLogger();
 const middleware = applyMiddleware(promise(), thunk, logger);
+//const middleware = applyMiddleware(promise(), thunk);
 
 export default createStore(reducer, middleware)

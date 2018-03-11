@@ -1,64 +1,89 @@
 import React from "react"
 import { connect } from "react-redux"
 
-import { fetchUser } from "../actions/UserActions"
+import * as Chat from "../actions/Chat"
+import * as User from "../actions/User"
+
+var chatRoomId = 0;
+var username = "johnhckuo";
 
 @connect((store) => {
   return {
     user: store.user.user,
-    userFetched: store.user.fetched,
-    //message: store.message.message
+    chatroom: store.chatroom
   };
 })
 export default class Chatroom extends React.Component {
 
   constructor(props){
     super(props);
-    this.state = ({
-      toMsg: [],
-      fromMsg: [],
-      currentMsg : ""
-    });
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchUser())
+    this.props.dispatch(Chat.createChatroom(username));
   }
 
-  sendMessage(e){
-    this.setState((prevState, props)=>{
-      return {
-        toMsg: prevState.toMsg.concat([prevState.currentMsg]),
-        currentMsg: ""
-      };
-    }, ()=>{
-      console.log(this.state.toMsg)
-    });
+  currentTime() {
+    var date = new Date();
+
+    var mm = date.getMonth() + 1; // getMonth() is zero-based
+    var dd = date.getDate();
+    var hh = date.getHours();
+    var minutes = date.getMinutes();
+
+    return [date.getFullYear(),
+            (mm>9 ? '' : '0') + mm,
+            (dd>9 ? '' : '0') + dd,
+            (hh>9 ? '' : '0') + hh,
+            (minutes>9 ? '' : '0') + minutes
+           ].join('.');
+  };
+
+  shouldComponentUpdate(nextProps, nextState){
+    const differentCurrentValue = this.props.chatroom.RoomArr[chatRoomId].currentMessage != nextProps.chatroom.RoomArr[chatRoomId].currentMessage;
+    return !differentCurrentValue;
+  }
+
+  sendMessage(currentMessage){
+    this.props.dispatch(Chat.setMsg(chatRoomId, username, currentMessage, this.currentTime()));
   }
 
   onInputMessage(e){
-    this.setState({
-      currentMsg: e.target.value
-    })
+    this.props.dispatch(Chat.setCurrentMsg(chatRoomId, e.target.value));
   }
 
   render() {
-    return <div className="chatRoom">
-      <ChatroomHeader />
-      <ChatMessageContent />
-      <Submit currentMsg = {this.state.currentMsg} sendMessage = {this.sendMessage.bind(this)} onInputMessage = {this.onInputMessage.bind(this)}/>
-    </div>
+    const { chatroom, user } = this.props;
+    const currentChatroom = chatroom.RoomArr[chatRoomId];
+    console.log("rerender")
+    return (<div className="chatRoom">
+      <div className = "chatRoomHeader"><h2>Chatroom 123</h2></div>
+      <div className = "chatMessageContent">
+        {
+          currentChatroom.message.map((val)=>{
+            if (val.user === username){
+              return (<div className="msg" key={val.id}>
+                <span className = "toMsg">{val.content}</span>
+              </div>);
+            }else{
+              return(<div className="msg" key={val.id}>
+                <span className = "fromMsg">{val.content}</span>
+              </div>);
+            }
+          })
+        }
+      </div>
+      <div className = "chatBar" ><input value = {currentChatroom.currentMessage} onChange = {this.onInputMessage.bind(this)} className = "submitBar" /><button onClick = {this.sendMessage.bind(this, currentChatroom.currentMessage)}>Submit</button></div>
+    </div>);
   }
 }
 
-function ChatroomHeader(){
-  return <div className = "chatRoomHeader"><h2>Chatroom 123</h2></div>;
-}
-
-function ChatMessageContent(){
-  return <div className = "chatMessageContent"><div className="msg"><span className="fromMsg">Message1</span></div><div className="msg"><span className = "toMsg">Message2</span></div></div>;
+function SubmitTime(){
+  let currentTime = new Date();
+  //console.log(currentTime.getMinutes())
+  return <div></div>;
 }
 
 function Submit(props){
-  return <div className = "chatBar" ><input onChange = {props.onInputMessage} value={props.currentMsg} className = "submitBar" /><button onClick = {props.sendMessage}>Submit</button></div>;
+  return;
 }

@@ -4,6 +4,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import * as Chat from "../actions/Chat"
 import * as User from "../actions/User"
+import * as Time from "../utils/time"
 
 @connect((store) => {
   return {
@@ -29,21 +30,10 @@ export default class Chatroom extends React.Component {
     this.props.dispatch(User.createUser(this.otherusername, 26, "zaza.png"));
   }
 
-  currentTime() {
-    var date = new Date();
-
-    var mm = date.getMonth() + 1; // getMonth() is zero-based
-    var dd = date.getDate();
-    var hh = date.getHours();
-    var minutes = date.getMinutes();
-
-    return [date.getFullYear(),
-            (mm>9 ? '' : '0') + mm,
-            (dd>9 ? '' : '0') + dd,
-            (hh>9 ? '' : '0') + hh,
-            (minutes>9 ? '' : '0') + minutes
-           ].join('.');
-  };
+  shouldComponentUpdate(nextProps, nextState){
+    const differentCurrentValue = this.props.chatroom.RoomArr[this.chatRoomId].currentMessage != nextProps.chatroom.RoomArr[this.chatRoomId].currentMessage;
+    return !differentCurrentValue;
+  }
 
   handleKeyPress(e){
     if (e.key === 'Enter') {
@@ -51,14 +41,9 @@ export default class Chatroom extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    const differentCurrentValue = this.props.chatroom.RoomArr[this.chatRoomId].currentMessage != nextProps.chatroom.RoomArr[this.chatRoomId].currentMessage;
-    return !differentCurrentValue;
-  }
-
   sendMessage(currentMessage){
-    this.props.dispatch(Chat.setMsg(this.chatRoomId, this.userId, currentMessage, this.currentTime()));
-    this.props.dispatch(Chat.setMsg(this.chatRoomId, this.otherUserId, "What?", this.currentTime()));
+    this.props.dispatch(Chat.setMsg(this.chatRoomId, this.userId, currentMessage, Time.currentTime()));
+    this.props.dispatch(Chat.setMsg(this.chatRoomId, this.otherUserId, "What?", Time.currentTime()));
   }
 
   onInputMessage(e){
@@ -69,31 +54,14 @@ export default class Chatroom extends React.Component {
     const { chatroom, user } = this.props;
     const currentChatroom = chatroom.RoomArr[this.chatRoomId];
     return (<div className="chatRoom">
-      <div className = "chatRoomHeader"><h2>Chatroom 123</h2></div>
+      <div className = "chatRoomHeader"><h2>Chatroom #1</h2></div>
       <div className = "chatMessageContent">
         <ReactCSSTransitionGroup transitionName="message" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
-        {
-          currentChatroom.message.map((val)=>{
-            if (val.userId === this.userId){
-              return (<div className="msg toMsg" key={val.id}>
-                <div className="msg_container">
-                  <div className = "msg_content">{val.content}</div>
-                </div>
-                <div className = "sent_time">{val.timestamp}</div>
-              </div>);
-            }else{
-              var userImage = user.UserList[val.userId].image;
-              return(<div className="msg fromMsg" key={val.id}>
-                <div className="msg_container">
-                  <div className = "user_icon"><img src={require(`../../images/${userImage}`)} /></div>
-                  <div className = "msg_content">{val.content}</div>
-                </div>
-                <div className = "sent_time">{val.timestamp}</div>
-
-              </div>);
-            }
-          })
-        }
+          {
+            currentChatroom.message.map((val)=>{
+              return <Messages val={val} user={user} userId={this.userId}/>
+            })
+          }
         </ReactCSSTransitionGroup>
       </div>
       <div className = "chatBar" ><input onKeyPress={this.handleKeyPress.bind(this)} value = {currentChatroom.currentMessage} onChange = {this.onInputMessage.bind(this)} className = "submitBar" /><button onClick = {this.sendMessage.bind(this, currentChatroom.currentMessage)}>Submit</button></div>
@@ -101,12 +69,39 @@ export default class Chatroom extends React.Component {
   }
 }
 
-function SubmitTime(){
-  let currentTime = new Date();
-  //console.log(currentTime.getMinutes())
-  return <div></div>;
+
+function SentMessage(props){
+  return (
+    <div className="msg toMsg" key={props.val.id}>
+      <div className="msg_container">
+        <div className = "msg_content">{props.val.content}</div>
+      </div>
+      <div className = "sent_time">{props.val.timestamp}</div>
+    </div>
+  );
 }
 
-function Submit(props){
-  return;
+function ReceiveMessage(props){
+  return (
+    <div className="msg fromMsg" key={props.val.id}>
+      <div className="msg_container">
+        <div className = "user_icon"><img src={require(`../../images/${props.userImage}`)} /></div>
+        <div className = "msg_content">{props.val.content}</div>
+      </div>
+      <div className = "sent_time">{props.val.timestamp}</div>
+    </div>
+  );
 }
+
+function Messages(props){
+  var message;
+
+  if (props.val.userId === props.userId){
+    message = <SentMessage val={props.val} />;
+  }else{
+    var userImage = props.user.UserList[props.val.userId].image;
+    message = <ReceiveMessage userImage={userImage} val={props.val}/>;
+  }
+  return message;
+}
+

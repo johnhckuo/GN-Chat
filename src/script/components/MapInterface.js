@@ -19,7 +19,7 @@ export default class MapInterface extends React.Component {
   }
 
   componentDidMount() {
-    let map = new window.google.maps.Map(document.getElementById('map'), {
+    let map = new window.google.maps.Map(document.getElementsByClassName('map')[0], {
       center: {lat: this.state.lat, lng: this.state.lng},
       zoom: 13,
       mapTypeId: 'roadmap',
@@ -50,7 +50,7 @@ export default class MapInterface extends React.Component {
     });
 
     // initialize the autocomplete functionality using the #pac-input input box
-    let inputNode = document.getElementById('pac-input');
+    let inputNode = document.getElementsByClassName('map__container__location__input')[0];
     map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(inputNode);
     let autoComplete = new window.google.maps.places.Autocomplete(inputNode);
 
@@ -77,8 +77,8 @@ export default class MapInterface extends React.Component {
 
   render() {
     return (
-      <div className="mapContainer">
-        <div id='mapState'>          
+      <div className="map__container">
+        <div className='map__container__state'>
             Zoom level: {this.state.zoom}<br />
             Map type: {this.state.maptype}<br />
             Latitude: {this.state.lat}<br />
@@ -87,13 +87,11 @@ export default class MapInterface extends React.Component {
             Place ID: {this.state.place_id}<br />
             Location: {this.state.place_location}<br />
         </div>
-        <div id='pac-container'>
-          <input id='pac-input' type='text' placeholder='Enter a location' />
+        <div className='map__container__location'>
+          <input className='map__container__location__input' type='text' placeholder='Enter a location' />
         </div>
-        <div id='map' />
+        <div className='map' />
       </div>
-    ); 
-  } 
+    );
+  }
 }
-
-

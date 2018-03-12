@@ -53,9 +53,9 @@ export default class Chatroom extends React.Component {
   render() {
     const { chatroom, user } = this.props;
     const currentChatroom = chatroom.RoomArr[this.chatRoomId];
-    return (<div className="chatRoom">
-      <div className = "chatRoomHeader"><h2>Chatroom #1</h2></div>
-      <div className = "chatMessageContent">
+    return (<div className="chatroom">
+      <div className = "chatroom__header"><h2>Chatroom #1</h2></div>
+      <div className = "chatroom__chatContainer">
         <ReactCSSTransitionGroup transitionName="message" transitionEnterTimeout={700} transitionLeaveTimeout={700}>
           {
             currentChatroom.message.map((val)=>{
@@ -64,7 +64,7 @@ export default class Chatroom extends React.Component {
           }
         </ReactCSSTransitionGroup>
       </div>
-      <div className = "chatBar" ><input onKeyPress={this.handleKeyPress.bind(this)} value = {currentChatroom.currentMessage} onChange = {this.onInputMessage.bind(this)} className = "submitBar" /><button onClick = {this.sendMessage.bind(this, currentChatroom.currentMessage)}>Submit</button></div>
+      <div className = "chatroom__submitBarContainer" ><input onKeyPress={this.handleKeyPress.bind(this)} value = {currentChatroom.currentMessage} onChange = {this.onInputMessage.bind(this)} className = "chatroom__submitBarContainer__submitBar" /><button onClick = {this.sendMessage.bind(this, currentChatroom.currentMessage)}>Submit</button></div>
     </div>);
   }
 }
@@ -72,23 +72,23 @@ export default class Chatroom extends React.Component {
 
 function SentMessage(props){
   return (
-    <div className="msg toMsg" key={props.val.id}>
-      <div className="msg_container">
-        <div className = "msg_content">{props.val.content}</div>
+    <div className="chatroom__chatContainer__messageContainer float--right" key={props.val.id}>
+      <div className="chatroom__chatContainer__messageContainer__message">
+        <div className = "chatroom__chatContainer__messageContainer__message__messageContent">{props.val.content}</div>
       </div>
-      <div className = "sent_time">{props.val.timestamp}</div>
+      <div className = "chatroom__chatContainer__messageContainer__sentTime">{props.val.timestamp}</div>
     </div>
   );
 }
 
 function ReceiveMessage(props){
   return (
-    <div className="msg fromMsg" key={props.val.id}>
-      <div className="msg_container">
-        <div className = "user_icon"><img src={require(`../../images/${props.userImage}`)} /></div>
-        <div className = "msg_content">{props.val.content}</div>
+    <div className="chatroom__chatContainer__messageContainer float--left" key={props.val.id}>
+      <div className="chatroom__chatContainer__messageContainer__message">
+        <div className = "chatroom__chatContainer__messageContainer__message__userIcon"><img src={require(`../../images/${props.userImage}`)} /></div>
+        <div className = "chatroom__chatContainer__messageContainer__message__messageContent">{props.val.content}</div>
       </div>
-      <div className = "sent_time">{props.val.timestamp}</div>
+      <div className = "chatroom__chatContainer__messageContainer__sentTime">{props.val.timestamp}</div>
     </div>
   );
 }
@@ -104,4 +104,3 @@ function Messages(props){
   }
   return message;
 }
-

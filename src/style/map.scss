@@ -1,26 +1,27 @@
-#map {
+.map {
 	position:absolute;
 	top:0px;
 	left:0px;
 	height:100%;
 	width:100%;
-}
-
-#mapState {
-	position: absolute;
-	padding:10px;
-	left: 10px;
-	bottom: 10px;
-	width: 200px;
-	z-index: 100;
-	background: rgba(0, 0, 0, 0.5);
-	color: white;
-	border-radius: 5px;
-	display: flex;
-	align-items: center;
-}
-
-
-#pac-input{
-	width:600px;
+	&__container{
+		&__state {
+			position: absolute;
+			padding:10px;
+			left: 10px;
+			bottom: 10px;
+			width: 200px;
+			z-index: 100;
+			background: rgba(0, 0, 0, 0.5);
+			color: white;
+			border-radius: 5px;
+			display: flex;
+			align-items: center;
+		}
+		&__location{
+			&__input{
+				width:600px;
+			}
+		}
+	}
 }

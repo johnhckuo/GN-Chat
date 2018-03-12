@@ -9,7 +9,7 @@ $padding: 10px;
 
 body{
 	@include flex-center;
-	overflow-y: scroll;
+	overflow-y: hidden;
 	font-family:"微軟正黑體";
 }
 

@@ -115,6 +115,19 @@ export default class MapInterface extends React.Component {
     });
   }
 
+  getPostion(){
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position)=>{
+          this.setState({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        });
+    } else { 
+        alert("Geolocation is not supported by this browser.");
+    }
+  }
+
 
   render() {
     return (
@@ -130,6 +143,7 @@ export default class MapInterface extends React.Component {
         </div>
         <div className='map__container__location'>
           <input className='map__container__location__input' type='text' placeholder='Enter a location' />
+          <button className="map__container__location__positioningBtn" onClick={this.getPostion.bind(this)}>Positioning</button>
         </div>
         <div className='map' />
       </div>

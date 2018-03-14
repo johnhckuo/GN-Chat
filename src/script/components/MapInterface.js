@@ -16,63 +16,64 @@ export default class MapInterface extends React.Component {
       place_id: '',
       place_location: '',
     };
+    this.map = null;
+    this.API_KEY = "AIzaSyA68pRZe0Qtae8ce4kYB05pwKnaFDYW6h0";
   }
 
   componentDidMount() {
-    let map = new window.google.maps.Map(document.getElementsByClassName('map')[0], {
+    this.geocoder = new window.google.maps.Geocoder();
+    this.map = new window.google.maps.Map(document.getElementsByClassName('map')[0], {
       center: {lat: this.state.lat, lng: this.state.lng},
       zoom: 13,
       mapTypeId: 'roadmap',
     });
-    map.addListener('zoom_changed', () => {
+    this.map.addListener('zoom_changed', () => {
       this.setState({
-        zoom: map.getZoom(),
+        zoom: this.map.getZoom(),
       });
     });
 
-    map.addListener('drag', (e) => {
+    this.map.addListener('drag', (e) => {
       this.setState({
         lat: e.latLng.lat(),
         lng: e.latLng.lng()
       });
     });
 
-    map.addListener('maptypeid_changed', () => {
+    this.map.addListener('maptypeid_changed', () => {
       this.setState({
-        maptype: map.getMapTypeId(),
+        maptype: this.map.getMapTypeId(),
       });
     });
 
-
     let marker = new window.google.maps.Marker({
-      map: map,
+      map: this.map,
       position: {lat: this.state.lat, lng: this.state.lng},
     });
 
     // initialize the autocomplete functionality using the #pac-input input box
-    let inputNode = document.getElementsByClassName('map__container__location__input')[0];
+    let inputNode = document.getElementsByClassName('pac_input')[0];
     var searchBox = new google.maps.places.SearchBox(inputNode);
-    map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(inputNode);
+    this.map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(inputNode);
     let autoComplete = new window.google.maps.places.Autocomplete(inputNode);
     
     // Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function() {
-      searchBox.setBounds(map.getBounds());
+    this.map.addListener('bounds_changed', ()=>{
+      searchBox.setBounds(this.map.getBounds());
     });
 
-    var markers = [];
+    this.markers = [];
     searchBox.addListener('places_changed', () => {
       var places = searchBox.getPlaces();
-      
       if (places.length == 0 ){
         return;
       }
 
       // Clear out the old markers.
-      markers.forEach(function(marker) {
+      this.markers.forEach(function(marker) {
         marker.setMap(null);
       });
-      markers = [];
+      this.markers = [];
       // For each place, get the icon, name and location.
       var bounds = new google.maps.LatLngBounds();
       places.forEach((place) => {
@@ -89,8 +90,8 @@ export default class MapInterface extends React.Component {
         };
 
         // Create a marker for each place.
-        markers.push(new google.maps.Marker({
-          map: map,
+        this.markers.push(new google.maps.Marker({
+          map: this.map,
           icon: icon,
           title: place.name,
           position: place.geometry.location
@@ -111,13 +112,43 @@ export default class MapInterface extends React.Component {
         });
 
       });
-      map.fitBounds(bounds);
+      this.map.fitBounds(bounds);
     });
   }
 
   getPostion(){
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position)=>{
+          var newLatLngCoord = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+          this.geocoder.geocode({
+            'latLng': newLatLngCoord
+          }, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+              if (results[1]) {
+                var marker = new google.maps.Marker({
+                  map: this.map,
+                  place: {
+                    placeId: results[1].place_id,
+                    location: results[1].geometry.location
+                  },
+                  position: newLatLngCoord,
+                  title: results[1].formatted_address
+                });
+              } else {
+                alert('No results found');
+                return;
+              }
+            } else {
+              alert('Geocoder failed due to: ' + status);
+              return;
+            }
+          });
+
+          var bounds = new google.maps.LatLngBounds();
+          bounds.extend(newLatLngCoord);
+          this.map.fitBounds(bounds);
+
           this.setState({
             lat: position.coords.latitude,
             lng: position.coords.longitude
@@ -140,11 +171,9 @@ export default class MapInterface extends React.Component {
             Place: {this.state.place_formatted}<br />
             Place ID: {this.state.place_id}<br />
             Location: {this.state.place_location}<br />
+            <button className="map__container__state__positioningBtn" onClick={this.getPostion.bind(this)}>Positioning</button>
         </div>
-        <div className='map__container__location'>
-          <input className='map__container__location__input' type='text' placeholder='Enter a location' />
-          <button className="map__container__location__positioningBtn" onClick={this.getPostion.bind(this)}>Positioning</button>
-        </div>
+        <input className='pac_input' type='text' placeholder='Enter a location' />
         <div className='map' />
       </div>
     );
